@@ -1,15 +1,24 @@
 const cds = require('@sap/cds');
-const bodyParser = require('body-parser');
 const customMiddleware = require('./middleware');
 
 cds.on('bootstrap', (app) => {
-    // Apply your custom middleware first
-    app.use('/odata/v4/my/receiveXML', customMiddleware);
+    // Override app.listen to set a custom server timeout
+    app.listen = function () {
+        // Create an HTTP server and set the timeout
+        const server = require('http').createServer(this);
+        server.timeout = 1200000; // Set timeout to 1200000 milliseconds (20 minutes)
+        
+        // You can also set keepAliveTimeout if needed
+        // server.keepAliveTimeout = 620000; // Set keep-alive timeout (optional)
 
-    // Then apply other body parsers
-    //app.use(bodyParser.text({ type: 'application/xml', limit: '50mb' }));
-    //app.use(bodyParser.json({ limit: '50mb' }));
-    //app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+        // Print the server timeout when the server starts
+        console.log(`Server timeout set to ${server.timeout / 60000} minutes`);
+
+        return server.listen.apply(server, arguments);
+    };
+
+    // Apply your custom middleware
+    app.use('/odata/v4/my/receiveXML', customMiddleware);
 });
 
 module.exports = cds.server;
