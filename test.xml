@@ -10,7 +10,7 @@
       <ARTICLE_DETAILS>
         <MANUFACTURER_AID>MANU123</MANUFACTURER_AID>
         <MANUFACTURER_NAME>Example Manufacturer</MANUFACTURER_NAME>
-        <DESCRIPTION_LONG>This is a long description for the article.</DESCRIPTION_LONG>
+        <DESCRIPTION_LONG>This is a long description for the article. It contains detailed information about the product.</DESCRIPTION_LONG>
         <DELIVERY_TIME>5 days</DELIVERY_TIME>
       </ARTICLE_DETAILS>
       <ARTICLE_ORDER_DETAILS>

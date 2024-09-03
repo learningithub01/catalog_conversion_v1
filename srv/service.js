@@ -15,77 +15,88 @@ module.exports = cds.service.impl(async function () {
             const parser = sax.parser(true);
 
             let currentTag = null;
-            let currentCatalog = {};
             let currentArticle = {};
             let currentSupplierID = null;
 
             parser.onopentag = (node) => {
                 currentTag = node.name;
+                console.log("Opening tag:", currentTag);
 
                 if (node.name === 'SUPPLIER_ID' && node.attributes.type === 'supplier_specific') {
                     currentSupplierID = '';
+                    console.log("Started capturing SUPPLIER_ID");
                 }
 
                 if (node.name === 'ARTICLE') {
                     currentArticle = {};
+                    console.log("Started new ARTICLE");
                 }
             };
 
             parser.ontext = (text) => {
-                if (!currentTag) return;
+                const trimmedText = text.trim();
+                if (!currentTag || !trimmedText) return;
+
+                console.log(`Text for ${currentTag}:`, trimmedText);
 
                 switch (currentTag) {
                     case 'SUPPLIER_ID':
                         if (currentSupplierID !== null) {
-                            currentSupplierID += text.trim();
+                            currentSupplierID += trimmedText;
                         }
                         break;
                     case 'SUPPLIER_AID':
-                        currentArticle.supplierAID = text.trim();
+                        currentArticle.supplierAID = trimmedText;
                         break;
                     case 'MANUFACTURER_AID':
-                        currentArticle.manufacturerAID = text.trim();
+                        currentArticle.manufacturerAID = trimmedText;
                         break;
                     case 'MANUFACTURER_NAME':
-                        currentArticle.manufacturerName = text.trim();
+                        currentArticle.manufacturerName = trimmedText;
                         break;
                     case 'ORDER_UNIT':
-                        currentArticle.orderUnit = text.trim();
+                        currentArticle.orderUnit = trimmedText;
                         break;
                     case 'DELIVERY_TIME':
-                        currentArticle.deliveryTime = text.trim();
+                        currentArticle.deliveryTime = trimmedText;
                         break;
                     case 'PRICE_AMOUNT':
-                        currentArticle.priceAmount = text.trim();
+                        currentArticle.priceAmount = trimmedText;
                         break;
                     case 'DESCRIPTION_LONG':
-                        currentArticle.descriptionLong = text.trim().substring(0, 5000);
+                        currentArticle.descriptionLong = trimmedText.substring(0, 5000);
                         break;
                 }
             };
 
             parser.onclosetag = (tagName) => {
+                console.log("Closing tag:", tagName);
+
                 if (tagName === 'ARTICLE') {
+                    // Ensure all required fields are checked correctly
                     if (currentSupplierID && currentArticle.supplierAID && currentArticle.manufacturerAID &&
                         currentArticle.manufacturerName && currentArticle.orderUnit &&
                         currentArticle.deliveryTime && currentArticle.priceAmount) {
-                        currentCatalog.supplierID = currentSupplierID;
-                        outputData.push({
-                            supplierID: currentSupplierID,
-                            supplierAID: currentArticle.supplierAID,
-                            manufacturerAID: currentArticle.manufacturerAID,
-                            manufacturerName: currentArticle.manufacturerName,
-                            orderUnit: currentArticle.orderUnit,
-                            deliveryTime: currentArticle.deliveryTime,
-                            priceAmount: currentArticle.priceAmount,
-                            descriptionLong: currentArticle.descriptionLong
-                        });
+
+                        // Set supplierID for the current article
+                        currentArticle.supplierID = currentSupplierID;
+
+                        // Push to outputData
+                        outputData.push(currentArticle);
+                        console.log("Added to outputData:", currentArticle);
+                    } else {
+                        console.log("Incomplete ARTICLE data, not adding to outputData");
                     }
-                    currentArticle = {};
+
+                    currentArticle = {}; // Reset for the next article
                 }
+
                 if (tagName === 'SUPPLIER_ID') {
-                    currentSupplierID = null;
+                    console.log("Finished capturing SUPPLIER_ID:", currentSupplierID);
                 }
+
+                // Reset currentTag to prevent incorrect data assignment
+                currentTag = null;
             };
 
             parser.onerror = (err) => {
@@ -97,8 +108,11 @@ module.exports = cds.service.impl(async function () {
 
             // Insert the processed data into the database
             const CatalogItems = await cds.entities.CatalogItems;
+            console.log("outputData", outputData);
             const result = await INSERT.into(CatalogItems).entries(outputData);
+            console.log("Insert result:", result);
 
+            // Return a success message
             return { message: "Data processed and stored successfully", result };
 
         } catch (err) {
