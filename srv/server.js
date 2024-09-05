@@ -1,5 +1,6 @@
 const cds = require('@sap/cds');
 const customMiddleware = require('./middleware');
+const fileUploadMiddleware = require('./fileUploadMiddleware'); // Import your custom middleware
 
 cds.on('bootstrap', (app) => {
     // Override app.listen to set a custom server timeout
@@ -19,6 +20,11 @@ cds.on('bootstrap', (app) => {
 
     // Apply your custom middleware
     app.use('/odata/v4/my/receiveXML', customMiddleware);
+    app.post('/upload', fileUploadMiddleware); // Apply the middleware to a specific route
+    app.get('/upload', (req, res) => {
+        res.send('Upload route is available');
+    });
+    
 });
 
 module.exports = cds.server;
