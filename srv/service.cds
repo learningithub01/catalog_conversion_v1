@@ -5,4 +5,6 @@ service MyService {
     action receiveXML(xmlData: String);  // Ensure xmlData is defined as String if you send JSON string
     action uploadFile(file: Binary); // Define the action for file uploads
 
+    action sendCIF() returns String;
+    action sendCIF2Ariba() returns String;
 }

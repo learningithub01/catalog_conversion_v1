@@ -32,9 +32,9 @@
   },
   "cds": {
     "requires": {
-        "auth": "xsuaa",
-        "connectivity": true,
-        "destinations": true
-      }
+      "auth": "xsuaa",
+      "connectivity": true,
+      "destinations": true
     }
   }
+}
