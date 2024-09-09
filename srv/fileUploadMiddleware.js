@@ -21,7 +21,7 @@ module.exports = [
     let currentArticle = {};
     let currentSupplierID = null;
     const outputData = [];
-    const batchSize = 150000;
+    const batchSize = 100000;
     let isInserting = false;
 
     parser.on('opentag', (node) => {
@@ -84,7 +84,7 @@ module.exports = [
           }
         } else {
           failedInserts++;
-          console.log("Incomplete ARTICLE data, not inserting into the database");
+          //console.log("Incomplete ARTICLE data, not inserting into the database");
         }
 
         currentArticle = {}; // Reset for the next article
@@ -109,8 +109,8 @@ module.exports = [
       if (outputData.length > 0 && !isInserting) {
         await insertBatch(outputData);
       }
-      console.log("insertedRecords", insertedRecords);
-      console.log("failedInserts", failedInserts);
+      //console.log("insertedRecords", insertedRecords);
+      //console.log("failedInserts", failedInserts);
 
       cleanupFile(filePath);
       // Respond with success message to avoid further processing
@@ -124,8 +124,9 @@ module.exports = [
       try {
         const { CatalogItems } = cds.entities;
         await INSERT.into(CatalogItems).entries(dataBatch);
-        console.log(`Inserted batch of ${dataBatch.length} records`);
+        //console.log(`Inserted batch of ${dataBatch.length} records`);
         insertedRecords += dataBatch.length;
+        console.log(`Total inserted rows ${insertedRecords} records`);
       } catch (err) {
         console.error("Error inserting batch into the database:", err);
       }

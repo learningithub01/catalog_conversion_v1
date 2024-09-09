@@ -32,12 +32,9 @@
   },
   "cds": {
     "requires": {
-      "db": {
-        "kind": "sqlite",
-        "credentials": {
-          "database": "sqlite.db"
-        }
+        "auth": "xsuaa",
+        "connectivity": true,
+        "destinations": true
       }
     }
   }
-}

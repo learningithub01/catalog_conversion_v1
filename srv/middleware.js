@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
         let currentArticle = {};
         let currentSupplierID = null;
         const outputData = [];
-        const batchSize = 15000;
+        const batchSize = 150000;
         let isInserting = false; // Flag to track if a batch insert is in progress
 
         parser.on('opentag', (node) => {

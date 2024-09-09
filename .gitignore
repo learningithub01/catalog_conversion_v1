@@ -32,3 +32,8 @@ mta_archives/
 
 # @cap-js/cds-typer
 @cds-models
+Makefile_20240905132036.mta
+package-lock.json
+app/catalog-conversion-ui/dist/mycatalogconversionui.zip
+app/catalog-conversion-ui/dist/sap-ui-cachebuster-info.json
+resources/mycatalogconversionui.zip

@@ -19,6 +19,8 @@ modules:
     buildpack: nodejs_buildpack
     readiness-health-check-http-endpoint: /health
     readiness-health-check-type: http
+    memory: 2048M
+    disk-quota: 6348M  # Increase the disk quota here
   build-parameters:
     builder: npm
 - name: catalog-conversion-db-deployer
@@ -75,7 +77,7 @@ resources:
   parameters:
     config:
       tenant-mode: dedicated
-      xsappname: catalog-conversion-${org}-${space}
+      xsappname: catalog-conversion
     path: ./xs-security.json
     service: xsuaa
     service-plan: application
