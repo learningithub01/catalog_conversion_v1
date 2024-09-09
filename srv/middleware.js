@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
 
 
     const contentType = req.headers['content-type'] || req.headers['Content-Type'];
-  console.log("In Middleware");
+    console.log("In Middleware");
     if (contentType === 'application/xml') {
         const rawData = req.body;
        const parser = new xml2js.Parser();
@@ -21,14 +21,7 @@ module.exports = (req, res, next) => {
                 xmlData: rawData
             };
 
-     
-            // Replace the raw XML with the transformed JSON in req.body
-            //req.body = {"xmlData": "<CatalogItems><order>Arun</order></CatalogItems>"};
-
-            
             req.body = JSON.stringify(transformedJson);
-            //console.log("Transformed JSON String:", req.body);
- 
             // Change the Content-Type to application/json
             req.headers['content-type'] = 'application/json';
 

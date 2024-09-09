@@ -9,6 +9,7 @@
     "@cap-js/hana": "^1",
     "@sap/cds": "^8",
     "@sap/xssec": "^4",
+    "axios": "^1.7.7",
     "body-parser": "^1.20.2",
     "body-parser-xml": "^2.0.5",
     "express": "^4",
