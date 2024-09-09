@@ -6,6 +6,11 @@ const axios = require('axios'); // Require axios
 
 module.exports = cds.service.impl(async function () {
     this.on('receiveXML', async (req) => {
+        // Simply acknowledge the request as the middleware handles all logic
+        return { message: "Data processing initiated" };
+    });
+
+    this.on('receiveXMLOld', async (req) => {
         const xmlData = req.data.xmlData;
         // Initialize an array to hold the combined data
         const outputData = [];
@@ -448,6 +453,5 @@ DATA
 
         console.log('All batches sent successfully');
     });
-
 
 });

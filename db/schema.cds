@@ -1,7 +1,6 @@
 namespace my.project;
 
 entity CatalogItems {
-   // key ID       : UUID;
     supplierID  : String;
     key supplierAID : String;
     manufacturerAID  : String;

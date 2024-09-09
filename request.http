@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> fix/upload_large_files
 POST http://localhost:4004/odata/v4/my/receiveXML HTTP/1.1
 content-type: application/xml
 
@@ -24700,5 +24704,16 @@ content-type: application/json
 
 
 ######
+<<<<<<< HEAD
 POST http://localhost:4004/odata/v4/my/sendCIF HTTP/1.1
 content-type: application/json
+=======
+GET http://localhost:4004/odata/v4/my/sendCIF HTTP/1.1
+content-type: application/json
+
+
+######
+GET http://localhost:4004/odata/v4/my/sendCIF2Ariba HTTP/1.1
+content-type: application/json
+
+>>>>>>> fix/upload_large_files

@@ -1,19 +1,30 @@
 const cds = require('@sap/cds');
-const bodyParser = require('body-parser');
 const customMiddleware = require('./middleware');
+const fileUploadMiddleware = require('./fileUploadMiddleware'); // Import your custom middleware
 
 cds.on('bootstrap', (app) => {
-    
-    //cds.setTimeout(900000, () => { // 15 minutes
-        // Use body-parser to handle raw XML as text
-        app.use(bodyParser.text({ type: 'application/xml' , limit: '5000mb'}));
-        app.use(bodyParser.json({ limit: '500mb' }));
-        app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
+    // Override app.listen to set a custom server timeout
+    app.listen = function () {
+        // Create an HTTP server and set the timeout
+        const server = require('http').createServer(this);
+        server.timeout = 1200000; // Set timeout to 1200000 milliseconds (20 minutes)
+        
+        // You can also set keepAliveTimeout if needed
+        // server.keepAliveTimeout = 620000; // Set keep-alive timeout (optional)
 
-        // Apply your custom middleware
-        app.use('/odata/v4/my/receiveXML', customMiddleware);
+        // Print the server timeout when the server starts
+        console.log(`Server timeout set to ${server.timeout / 60000} minutes`);
+
+        return server.listen.apply(server, arguments);
+    };
+
+    // Apply your custom middleware
+    app.use('/odata/v4/my/receiveXML', customMiddleware);
+    app.post('/upload', fileUploadMiddleware); // Apply the middleware to a specific route
+    app.get('/upload', (req, res) => {
+        res.send('Upload route is available');
     });
-//});
+    
+});
 
 module.exports = cds.server;
-
